@@ -46,7 +46,6 @@ function LoadingScreen() {
   ];
 
   useEffect(() => {
-    // Client-side particle generation to avoid SSR hydration mismatch
     setParticles([...Array(25)].map(() => ({
       left: Math.random() * 100,
       top: Math.random() * 100,
@@ -73,54 +72,41 @@ function LoadingScreen() {
 
   return (
     <motion.div 
-      className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#04060f] overflow-hidden"
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-[#04060f] overflow-hidden px-4 text-center"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
     >
-      {/* Background Floating Particles */}
       {particles.map((p, i) => (
         <motion.div
           key={i}
           className="absolute w-1 h-1 bg-white/20 rounded-full"
           style={{ left: `${p.left}vw`, top: `${p.top}vh` }}
-          animate={{
-            y: [0, -100],
-            opacity: [0, 0.5, 0]
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "linear"
-          }}
+          animate={{ y: [0, -100], opacity: [0, 0.5, 0] }}
+          transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: "linear" }}
         />
       ))}
 
-      {/* Spinning Atom Logo */}
       <motion.div
         animate={{ rotate: 360, scale: [1, 1.15, 1] }}
         transition={{ rotate: { duration: 4, repeat: Infinity, ease: "linear" }, scale: { duration: 2, repeat: Infinity, ease: "easeInOut" } }}
         className="text-[#4cc9f0] drop-shadow-[0_0_25px_rgba(76,201,240,0.8)] relative z-10"
       >
-        <Atom size={80} strokeWidth={1} />
+        <Atom size={64} strokeWidth={1} />
       </motion.div>
       
-      <div className="mt-8 flex flex-col items-center z-10">
-        {/* Dynamic Scientific Phrases */}
-        <h2 className="text-[10px] font-mono text-[#f72585] tracking-[0.3em] mb-4 h-4 uppercase drop-shadow-[0_0_10px_rgba(247,37,133,0.8)]">
+      <div className="mt-8 flex flex-col items-center z-10 w-full max-w-xs">
+        <h2 className="text-[9px] md:text-[10px] font-mono text-[#f72585] tracking-[0.2em] md:tracking-[0.3em] mb-4 h-4 uppercase drop-shadow-[0_0_10px_rgba(247,37,133,0.8)]">
           {phrase}
         </h2>
         
-        {/* Percentage Counter */}
         <div className="flex items-end gap-1.5 mb-2">
-          <span className="text-4xl font-black text-transparent bg-clip-text tracking-tighter" style={{ backgroundImage: "linear-gradient(to right, #4cc9f0, #c77dff)" }}>
+          <span className="text-3xl md:text-4xl font-black text-transparent bg-clip-text tracking-tighter" style={{ backgroundImage: "linear-gradient(to right, #4cc9f0, #c77dff)" }}>
             {progress}
           </span>
-          <span className="text-xl font-bold text-white/50 mb-1">%</span>
+          <span className="text-lg md:text-xl font-bold text-white/50 mb-1">%</span>
         </div>
         
-        {/* Glowing Progress Bar */}
-        <div className="w-64 h-1.5 bg-white/10 rounded-full overflow-hidden relative shadow-[0_0_20px_rgba(76,201,240,0.3)]">
+        <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden relative shadow-[0_0_20px_rgba(76,201,240,0.3)]">
           <motion.div 
             className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#4cc9f0] to-[#c77dff]"
             style={{ width: `${progress}%` }}
@@ -139,11 +125,8 @@ export default function PeriodicTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState(null);
 
-  // Handle Loading Simulation
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2800); 
+    const timer = setTimeout(() => { setIsLoading(false); }, 2800); 
     return () => clearTimeout(timer);
   }, []);
 
@@ -168,7 +151,7 @@ export default function PeriodicTable() {
 
       {!isLoading && (
         <motion.div 
-          className="min-h-screen bg-[#04060f] flex flex-col items-center justify-start pt-12 md:pt-16 p-4 font-sans select-none overflow-hidden relative"
+          className="min-h-screen bg-[#04060f] flex flex-col items-center justify-start pt-6 md:pt-16 pb-8 md:p-4 font-sans select-none overflow-x-hidden relative"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
@@ -185,27 +168,27 @@ export default function PeriodicTable() {
             }} 
           />
 
-          {/* Very subtle, minimalistic controls at top right */}
+          {/* Top Controls Area - Responsive Mobile Layout */}
           <motion.div 
-            className="absolute top-4 right-4 md:top-6 md:right-6 z-40 flex flex-col md:flex-row items-end md:items-center gap-3 md:gap-4"
+            className="w-full px-4 md:px-0 md:absolute md:top-6 md:right-6 z-40 flex flex-row justify-between md:justify-end items-center gap-3 md:gap-4 mb-6 md:mb-0"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
             {/* Search */}
-            <div className="relative group">
+            <div className="relative group flex-1 md:flex-none">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-[#4cc9f0] transition-colors" size={14} />
               <input 
                 type="text" 
-                placeholder="Search..." 
+                placeholder="Search element..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-32 md:w-48 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full py-1.5 pl-9 pr-3 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#4cc9f0] transition-all"
+                className="w-full md:w-48 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full py-2 md:py-1.5 pl-9 pr-3 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#4cc9f0] transition-all"
               />
             </div>
             
             {/* Temperature */}
-            <div className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 rounded-full transition-all">
+            <div className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-2 md:py-1.5 rounded-full transition-all shrink-0">
               <Thermometer size={14} className={temperature > 3000 ? "text-red-500" : temperature < 200 ? "text-blue-500" : "text-amber-500"} />
               <input 
                 type="range" 
@@ -214,16 +197,16 @@ export default function PeriodicTable() {
                 step="1" 
                 value={temperature} 
                 onChange={(e) => setTemperature(parseInt(e.target.value))}
-                className="w-20 md:w-24 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer"
+                className="w-16 md:w-24 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer"
               />
-              <span className="text-[10px] font-mono font-bold text-white/70 w-8 text-right">{temperature}K</span>
+              <span className="text-[10px] md:text-[10px] font-mono font-bold text-white/70 w-8 text-right">{temperature}K</span>
             </div>
           </motion.div>
 
-          {/* Main Title at the top of the page */}
-          <div className="relative z-10 w-full max-w-[1300px] flex flex-col items-center text-center mb-10 pointer-events-none select-none">
+          {/* Main Title */}
+          <div className="relative z-10 w-full max-w-[1300px] flex flex-col items-center text-center mb-8 md:mb-10 pointer-events-none select-none px-4">
             <motion.h1 
-              className="text-5xl md:text-7xl font-black text-transparent bg-clip-text tracking-tighter" 
+              className="text-4xl md:text-7xl font-black text-transparent bg-clip-text tracking-tighter" 
               style={{ 
                 backgroundImage: "linear-gradient(to right, #4cc9f0, #c77dff)",
                 filter: "drop-shadow(0 0 25px rgba(76,201,240,0.4))" 
@@ -235,7 +218,7 @@ export default function PeriodicTable() {
               QUANTUM
             </motion.h1>
             <motion.h2 
-              className="text-lg md:text-2xl font-bold text-white/90 tracking-[0.3em] uppercase mt-2"
+              className="text-sm md:text-2xl font-bold text-white/90 tracking-[0.2em] md:tracking-[0.3em] uppercase mt-1 md:mt-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 1 }}
@@ -244,13 +227,13 @@ export default function PeriodicTable() {
             </motion.h2>
           </div>
 
-          {/* Main Table Grid Layout */}
-          <div className="relative z-10 w-full max-w-[1300px] overflow-x-auto pb-6 custom-scrollbar flex justify-center">
+          {/* Main Table Grid Layout - Mobile Scrollable */}
+          <div className="relative z-10 w-full max-w-[1300px] overflow-x-auto pb-6 custom-scrollbar flex justify-start md:justify-center px-4 md:px-0">
             <div 
-              className="grid gap-[3px] md:gap-[4px] lg:gap-[6px] pb-6 mx-auto" 
+              className="grid gap-[3px] md:gap-[4px] lg:gap-[6px] pb-6 shrink-0 w-max md:w-full" 
               style={{ 
-                gridTemplateColumns: "repeat(18, minmax(35px, 1fr))",
-                gridTemplateRows: "repeat(10, minmax(35px, 1fr))",
+                gridTemplateColumns: "repeat(18, minmax(45px, 1fr))",
+                gridTemplateRows: "repeat(10, minmax(45px, 1fr))",
                 minWidth: "800px"
               }}
             >
@@ -265,7 +248,6 @@ export default function PeriodicTable() {
                   const stateOfMatter = getStateOfMatter(el, temperature);
                   const radio = isRadioactive(el);
                   
-                  // Dim non-matching elements based on search OR category
                   const opacity = (searchQuery || activeCategory) ? (isVisible ? 1 : 0.1) : 1;
 
                   return (
@@ -296,23 +278,23 @@ export default function PeriodicTable() {
                       transition={{ 
                         opacity: { duration: 0.3 },
                         scale: { type: "spring", stiffness: 300, damping: 20 },
-                        default: { delay: i * 0.005 } // Staggered entrance animation
+                        default: { delay: i * 0.005 }
                       }}
                       whileTap={{ scale: 0.95 }}
                     >
                       <div className="flex justify-between items-start w-full leading-none">
-                        <span className="text-[8px] md:text-[10px] font-mono text-white/80">{el.n}</span>
+                        <span className="text-[9px] md:text-[10px] font-mono text-white/80">{el.n}</span>
                         
-                        <div className="flex items-center gap-0.5">
-                          {radio && <Radiation size={6} className="text-amber-500 animate-pulse" />}
-                          {stateOfMatter === 'gas' && <span className="text-[6px] opacity-40">☁️</span>}
-                          {stateOfMatter === 'liquid' && <span className="text-[6px] opacity-40">💧</span>}
+                        <div className="flex items-center gap-[2px]">
+                          {radio && <Radiation size={7} className="text-amber-500 animate-pulse" />}
+                          {stateOfMatter === 'gas' && <span className="text-[7px] opacity-40">☁️</span>}
+                          {stateOfMatter === 'liquid' && <span className="text-[7px] opacity-40">💧</span>}
                         </div>
                       </div>
                       
                       <div className="flex-1 flex items-center justify-center">
                         <span 
-                          className="text-base md:text-xl font-black tracking-tighter" 
+                          className="text-lg md:text-xl font-black tracking-tighter" 
                           style={{ 
                             color: cat.color,
                             textShadow: isHovered || isSelected ? `0 0 10px ${cat.color}` : 'none'
@@ -333,29 +315,25 @@ export default function PeriodicTable() {
               {/* Legend / Gap area labels */}
               <motion.div 
                 className="col-start-3 col-end-4 row-start-6 flex items-center justify-center text-[10px] font-mono opacity-40"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
-                transition={{ delay: 1 }}
+                initial={{ opacity: 0 }} animate={{ opacity: 0.4 }} transition={{ delay: 1 }}
               >57-71</motion.div>
               <motion.div 
                 className="col-start-3 col-end-4 row-start-7 flex items-center justify-center text-[10px] font-mono opacity-40"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
-                transition={{ delay: 1 }}
+                initial={{ opacity: 0 }} animate={{ opacity: 0.4 }} transition={{ delay: 1 }}
               >89-103</motion.div>
             </div>
           </div>
 
-          {/* Category Legend & Filters Moved to Bottom */}
+          {/* Category Legend & Filters at Bottom */}
           <motion.div 
-            className="relative z-10 w-full max-w-[1000px] flex flex-wrap gap-2 mb-12 justify-center px-4"
+            className="relative z-10 w-full max-w-[1000px] flex flex-wrap gap-1.5 md:gap-2 mt-4 md:mb-12 justify-center px-4"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.8 }}
           >
             <button 
               onClick={() => setActiveCategory(null)}
-              className={`px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-bold transition-all border ${!activeCategory ? 'bg-white/20 border-white/40 text-white' : 'bg-transparent border-white/10 text-white/40 hover:bg-white/5 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-full text-[9px] md:text-[10px] uppercase tracking-wider font-bold transition-all border ${!activeCategory ? 'bg-white/20 border-white/40 text-white' : 'bg-transparent border-white/10 text-white/40 hover:bg-white/5 hover:text-white'}`}
             >
               All Elements
             </button>
@@ -363,7 +341,7 @@ export default function PeriodicTable() {
               <button 
                 key={key}
                 onClick={() => setActiveCategory(activeCategory === key ? null : key)}
-                className={`px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-bold transition-all border flex items-center gap-2`}
+                className={`px-2 md:px-3 py-1.5 rounded-full text-[8px] md:text-[10px] uppercase tracking-wider font-bold transition-all border flex items-center gap-1.5`}
                 style={{
                   borderColor: activeCategory === key ? cat.color : `${cat.color}33`,
                   backgroundColor: activeCategory === key ? `${cat.color}22` : 'transparent',
@@ -371,7 +349,7 @@ export default function PeriodicTable() {
                   boxShadow: activeCategory === key ? `0 0 10px ${cat.glow}` : 'none'
                 }}
               >
-                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color, boxShadow: `0 0 5px ${cat.color}` }}></div>
+                <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full" style={{ backgroundColor: cat.color, boxShadow: `0 0 5px ${cat.color}` }}></div>
                 {cat.label}
               </button>
             ))}

@@ -240,7 +240,7 @@ export default function ElementDetailsModal({ el, onClose }) {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-h-[400px] w-full overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-[300px] md:min-h-[400px] w-full overflow-hidden">
           <AnimatePresence mode="wait">
             {activeTab === '3d' && (
               <motion.div 
@@ -255,7 +255,7 @@ export default function ElementDetailsModal({ el, onClose }) {
                     <Box className="text-[#4cc9f0]" /> Bohr Atom Model
                   </h3>
                 </div>
-                <div className="flex-1 bg-black/40 rounded-xl border border-white/5 overflow-hidden h-full min-h-[400px]">
+                <div className="flex-1 bg-black/40 rounded-xl border border-white/5 overflow-hidden h-full min-h-[300px] md:min-h-[400px]">
                   <Atom3D el={el} iso={el.iso && el.iso[0] ? el.iso[0] : { name: el.sym, mass: el.mass }} />
                 </div>
               </motion.div>
