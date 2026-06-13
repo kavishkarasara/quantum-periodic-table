@@ -4,7 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ELEMENTS, CATEGORIES } from "@/lib/elementsData";
 import ElementDetailsModal from "./ElementDetailsModal";
-import { Search, Thermometer, Radiation, Atom } from "lucide-react";
+import { Search, Thermometer, Radiation, Atom, Beaker } from "lucide-react";
+import Link from "next/link";
 
 const getGridPosition = (el) => {
   if (el.cat === "lanthanide") {
@@ -175,6 +176,15 @@ export default function PeriodicTable() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
+            {/* Virtual Lab Link */}
+            <Link 
+              href="/lab"
+              className="flex items-center justify-center gap-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 text-cyan-400 px-3 py-2 md:py-1.5 rounded-full transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)] shrink-0"
+            >
+              <Beaker size={14} />
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-wider">Virtual Lab</span>
+            </Link>
+
             {/* Search */}
             <div className="relative group flex-1 md:flex-none">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 group-focus-within:text-[#4cc9f0] transition-colors" size={14} />
